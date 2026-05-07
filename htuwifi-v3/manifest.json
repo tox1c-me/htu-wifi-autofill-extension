@@ -1,0 +1,30 @@
+{
+  "manifest_version": 3,
+  "name": "河师大校园网自动认证",
+  "version": "2.0",
+  "description": "河南师范大学校园网通用自动认证 - 支持教学区和宿舍区独立配置",
+  "permissions": ["storage"],
+  "host_permissions": [
+    "*://10.101.2.194/*",
+    "*://10.10.36.2/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "*://10.101.2.194/*",
+        "*://10.10.36.2/*"
+      ],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "河师大校园网认证"
+  },
+  "icons": {
+    "16": "icon.png",
+    "48": "icon.png",
+    "128": "icon.png"
+  }
+}
