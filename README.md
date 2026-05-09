@@ -1,3 +1,4 @@
+受HTU-TOOLBOX项目（https://github.com/arkuna23/htu-toolbox）的启发 耗时约一小时vibe coding出了我的第一个小作品
 # htu-wifi-autofill-extension
 
 适用于河南师范大学校园网认证的自动填充插件，支持宿舍 WiFi、教学楼 WiFi 及教师 WiFi 自动填充登录，实现全自动登录。
