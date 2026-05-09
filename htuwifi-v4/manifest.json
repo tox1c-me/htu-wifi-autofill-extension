@@ -1,0 +1,36 @@
+{
+  "manifest_version": 3,
+  "name": "河师大⭐校园网自动认证插件",
+  "version": "4.0",
+  "description": "河南师范大学校园网通用自动认证 - 教学区/宿舍区/教师区   Debugged by 0xHYDRO & DeepSeek🐋",
+  "permissions": ["storage"],
+  "host_permissions": [
+    "*://10.101.2.194/*",
+    "*://10.10.36.2/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "*://10.101.2.194/*",
+        "*://10.10.36.2/*"
+      ],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+	{
+    "resources": ["logo.png"],
+    "matches": ["<all_urls>"]
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "河Star⭐校园网自动认证插件"
+  },
+  "icons": {
+    "16": "icon.png",
+    "48": "icon.png",
+    "128": "icon.png"
+  }
+}

@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>河Star🌟校园网认证</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      width: 360px;
+      height: 560px;
+      font-family: 'Microsoft YaHei', 'PingFang SC', sans-serif;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* ========== 开屏动画层 ========== */
+    #splash-screen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #0c0c1d 0%, #1a1a3e 30%, #0d1b2a 60%, #1b0a2e 100%);
+      background-size: 400% 400%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      transition: opacity 0.6s ease, transform 0.6s ease;
+      animation: bgShift 6s ease-in-out infinite;
+    }
+
+    #splash-screen.hide {
+      opacity: 0;
+      transform: scale(1.1);
+      pointer-events: none;
+    }
+
+    @keyframes bgShift {
+      0%, 100% { background-position: 0% 50%; }
+      25% { background-position: 100% 0%; }
+      50% { background-position: 100% 100%; }
+      75% { background-position: 0% 100%; }
+    }
+
+    .particles {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .particle {
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+      animation: floatUp linear infinite;
+      opacity: 0;
+    }
+
+    @keyframes floatUp {
+      0% { transform: translateY(0) scale(0); opacity: 0; }
+      10% { opacity: 0.8; }
+      90% { opacity: 0.2; }
+      100% { transform: translateY(-560px) scale(1); opacity: 0; }
+    }
+
+    .splash-icon-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 24px;
+    }
+
+    .splash-icon {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, #4facfe, #00f2fe);
+      border-radius: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 32px rgba(79, 172, 254, 0.4);
+      z-index: 2;
+      animation: iconPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes iconPulse {
+      0%, 100% { box-shadow: 0 8px 32px rgba(79, 172, 254, 0.4); }
+      50% { box-shadow: 0 8px 48px rgba(79, 172, 254, 0.7); }
+    }
+
+    .ripple-ring {
+      position: absolute;
+      width: 80px;
+      height: 80px;
+      border-radius: 22px;
+      border: 2px solid rgba(79, 172, 254, 0.5);
+      animation: ripple 2s ease-out infinite;
+      z-index: 1;
+    }
+    .ripple-ring:nth-child(2) { animation-delay: 0.6s; }
+    .ripple-ring:nth-child(3) { animation-delay: 1.2s; }
+
+    @keyframes ripple {
+      0% { transform: scale(1); opacity: 0.8; }
+      100% { transform: scale(1.8); opacity: 0; }
+    }
+
+    .splash-title {
+      font-size: 22px;
+      font-weight: bold;
+      color: white;
+      z-index: 2;
+      letter-spacing: 2px;
+      background: linear-gradient(90deg, #4facfe, #a0d9ff, #4facfe);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: shimmer 2s linear infinite;
+    }
+
+    @keyframes shimmer {
+      0% { background-position: 0% center; }
+      100% { background-position: 200% center; }
+    }
+
+    .splash-subtitle {
+      font-size: 13px;
+      color: rgba(255,255,255,0.7);
+      margin-top: 8px;
+      z-index: 2;
+      letter-spacing: 1px;
+    }
+
+    .progress-bar-wrap {
+      width: 200px;
+      height: 3px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 10px;
+      margin-top: 28px;
+      overflow: hidden;
+      z-index: 2;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #4facfe, #00f2fe);
+      border-radius: 10px;
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    .made-by {
+      position: absolute;
+      bottom: 22px;
+      font-size: 11px;
+      color: rgba(255,255,255,0.35);
+      letter-spacing: 1.5px;
+      z-index: 2;
+      text-align: center;
+    }
+
+    /* ========== 主界面层 ========== */
+    #main-screen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #f0f2f5;
+      overflow-y: auto;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      padding: 16px;
+    }
+
+    #main-screen.show { opacity: 1; }
+
+    .container {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      text-align: center;
+      font-size: 16px;
+      color: #1a1a2e;
+      margin-bottom: 12px;
+    }
+    h2 span { font-size: 11px; color: #999; }
+
+    .tab-container {
+      display: flex;
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 16px;
+      border: 2px solid #e8e8e8;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 10px 4px;
+      text-align: center;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: bold;
+      border: none;
+      background: #fff;
+      color: #999;
+      transition: all 0.2s;
+    }
+    .tab-btn.active {
+      background: linear-gradient(135deg, #1a56db, #1e40af);
+      color: white;
+    }
+    .tab-btn:nth-child(2) { border-left: 1px solid #e8e8e8; border-right: 1px solid #e8e8e8; }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    .form-group { margin-bottom: 12px; }
+    label {
+      display: block;
+      font-size: 12px;
+      color: #555;
+      margin-bottom: 4px;
+      font-weight: bold;
+    }
+
+    input[type="text"],
+    input[type="password"],
+    select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 2px solid #e8e8e8;
+      border-radius: 8px;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+      background: white;
+    }
+    input:focus, select:focus { border-color: #1a56db; }
+
+    select {
+      appearance: none;
+      background: white url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M6 8L1 3h10z' fill='%23888'/%3E%3C/svg%3E") no-repeat right 12px center;
+      cursor: pointer;
+    }
+
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 10px 0;
+      font-size: 13px;
+      color: #555;
+    }
+    .checkbox-row input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      accent-color: #1a56db;
+    }
+
+    .btn-row { display: flex; gap: 8px; margin-top: 16px; }
+    .btn {
+      flex: 1;
+      padding: 12px 0;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #1a56db, #1e40af);
+      color: white;
+    }
+    .btn-primary:hover { opacity: 0.9; }
+    .btn-outline {
+      background: white;
+      color: #1a56db;
+      border: 2px solid #1a56db;
+    }
+    .btn-outline:hover { background: #f0f4ff; }
+
+    .status {
+      text-align: center;
+      margin-top: 10px;
+      font-size: 12px;
+      min-height: 18px;
+      transition: all 0.3s;
+    }
+    .status.success { color: #10b981; }
+    .status.error { color: #ef4444; }
+
+    .quick-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 14px;
+      justify-content: center;
+    }
+    .quick-link {
+      display: inline-block;
+      padding: 6px 14px;
+      background: #f0f4ff;
+      color: #1a56db;
+      text-decoration: none;
+      border-radius: 20px;
+      font-size: 12px;
+      transition: all 0.2s;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .quick-link:hover {
+      background: #dbe4ff;
+      transform: translateY(-1px);
+    }
+
+    .footer-note {
+      margin-top: 12px;
+      font-size: 11px;
+      color: #bbb;
+      text-align: center;
+      line-height: 1.6;
+      user-select: none;
+    }
+
+    #main-screen::-webkit-scrollbar { width: 4px; }
+    #main-screen::-webkit-scrollbar-thumb { background: #ddd; border-radius: 4px; }
+  </style>
+</head>
+<body>
+
+  <!-- ========== 开屏动画 ========== -->
+  <div id="splash-screen">
+    <div class="particles" id="particles"></div>
+
+    <div class="splash-icon-wrap">
+      <div class="ripple-ring"></div>
+      <div class="ripple-ring"></div>
+      <div class="ripple-ring"></div>
+      <div class="splash-icon">
+		<img src="logo.png" style="width: 96px; height: 96px;">
+	  </div>
+    </div>
+
+    <div class="splash-title">河Star⭐校园网</div>
+    <div class="splash-subtitle">自动认证助手</div>
+
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-fill" id="progress-bar"></div>
+    </div>
+
+    <div class="made-by">Debugged by 0xHYDRO & DeepSeek🐋</div>
+  </div>
+
+  <!-- ========== 主界面 ========== -->
+  <div id="main-screen">
+    <div class="container">
+      <h2>🎓 河Star⭐校园网<br><span>教学区 · 宿舍区 · 教师区 通用认证</span></h2>
+
+      <div class="tab-container">
+        <button class="tab-btn active" data-tab="jiaoxue">🏫 教学区</button>
+        <button class="tab-btn" data-tab="sushe">🏠 宿舍区</button>
+        <button class="tab-btn" data-tab="teacher">👨‍🏫 教师区</button>
+      </div>
+
+      <!-- 教学区 -->
+      <div class="tab-content active" id="tab-jiaoxue">
+        <div class="form-group">
+          <label>📧 账号（学号/工号）</label>
+          <input type="text" id="j-username" placeholder="请输入教学区账号">
+        </div>
+        <div class="form-group">
+          <label>🔒 密码</label>
+          <input type="password" id="j-password" placeholder="请输入教学区密码">
+        </div>
+        <div class="checkbox-row">
+          <input type="checkbox" id="j-autoSubmit" checked>
+          <label for="j-autoSubmit">自动点击登录</label>
+        </div>
+        <div class="checkbox-row">
+          <input type="checkbox" id="j-enabled" checked>
+          <label for="j-enabled">启用此区域自动填充</label>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" id="j-saveBtn">💾 保存</button>
+          <button class="btn btn-outline" id="j-fillBtn">⚡ 立即填充</button>
+        </div>
+      </div>
+
+      <!-- 宿舍区 -->
+      <div class="tab-content" id="tab-sushe">
+        <div class="form-group">
+          <label>📧 账号（学号/工号）</label>
+          <input type="text" id="s-username" placeholder="请输入宿舍区账号">
+        </div>
+        <div class="form-group">
+          <label>🔒 密码</label>
+          <input type="password" id="s-password" placeholder="请输入宿舍区密码">
+        </div>
+        <div class="form-group">
+          <label>📡 运营商</label>
+          <select id="s-operator">
+            <option value="">无（直连）/临时账号</option>
+            <option value="yd">移动</option>
+            <option value="lt">联通</option>
+            <option value="dx">电信</option>
+			<!-- <option value="jzg">教职公</option> -->
+            <!-- <option value="xnzy">资源（校园网）</option> -->
+          </select>
+        </div>
+        <div class="checkbox-row">
+          <input type="checkbox" id="s-autoSubmit" checked>
+          <label for="s-autoSubmit">自动点击登录</label>
+        </div>
+        <div class="checkbox-row">
+          <input type="checkbox" id="s-enabled" checked>
+          <label for="s-enabled">启用此区域自动填充</label>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" id="s-saveBtn">💾 保存</button>
+          <button class="btn btn-outline" id="s-fillBtn">⚡ 立即填充</button>
+        </div>
+      </div>
+
+      <!-- 教师区 -->
+      <div class="tab-content" id="tab-teacher">
+        <div class="form-group">
+          <label>📧 账号（工号）</label>
+          <input type="text" id="t-username" placeholder="请输入教师区账号">
+        </div>
+        <div class="form-group">
+          <label>🔒 密码</label>
+          <input type="password" id="t-password" placeholder="请输入教师区密码">
+        </div>
+        <div class="checkbox-row">
+          <input type="checkbox" id="t-autoSubmit" checked>
+          <label for="t-autoSubmit">自动点击登录</label>
+        </div>
+        <div class="checkbox-row">
+          <input type="checkbox" id="t-enabled" checked>
+          <label for="t-enabled">启用此区域自动填充</label>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" id="t-saveBtn">💾 保存</button>
+          <button class="btn btn-outline" id="t-fillBtn">⚡ 立即填充</button>
+        </div>
+      </div>
+
+      <div class="status" id="status"></div>
+
+      <div class="quick-links">
+        
+      </div>
+
+      <div class="footer-note">
+        💡 三区域配置独立保存，自动识别<br>
+        数据完全本地存储，安全无忧
+      </div>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
