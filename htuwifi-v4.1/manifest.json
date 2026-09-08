@@ -1,0 +1,30 @@
+{
+  "manifest_version": 3,
+  "name": "河师大⭐校园网自动认证助手",
+  "version": "4.1.0",
+  "description": "面向河南师范大学校园网的自动认证助手，支持教学区、宿舍区与教师区。",
+  "permissions": ["storage"],
+  "host_permissions": [
+    "*://10.101.2.194/*",
+    "*://10.10.36.2/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "*://10.101.2.194/*",
+        "*://10.10.36.2/*"
+      ],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "河师大⭐校园网自动认证助手"
+  },
+  "icons": {
+    "16": "icon.png",
+    "48": "icon.png",
+    "128": "icon.png"
+  }
+}
